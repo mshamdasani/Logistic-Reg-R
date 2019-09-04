@@ -5,7 +5,7 @@ library(car)
 library(mgcv)
 
 
-#This sets working directory, CWD in python
+#This sets working directory, cha
 setwd("C:\\Users\\ryanm\\OneDrive\\Documents\\")
 
 #Reading in Dataframes from CSV files
