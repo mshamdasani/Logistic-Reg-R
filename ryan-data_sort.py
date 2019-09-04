@@ -57,3 +57,6 @@ var_dict = {'variable': variable,'data_type': data_type,'test':test}
     
 variable_types = pd.DataFrame(var_dict)
 variable_types.to_csv('C:\\Users\\ryanm\\OneDrive\\Documents\\Logistic_hw\\variable_types.csv')
+
+
+training_df.RES.value_counts()
