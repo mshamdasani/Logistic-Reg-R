@@ -9,6 +9,7 @@ library(car)
 library(plotly)
 library(lubridate)
 library(magrittr)
+library(broom)
 
 ##########################################
 #                                        #
@@ -62,6 +63,8 @@ sapply(insurance_t, class)
 # Check for Missing Data --------------------------------------------------------------------------
 #number of missing values for each variable
 mv <- lapply(insurance_t, function(x) sum(is.na(x)))
+col_of_interest<- mv[mv> 1000] 
+col_of_interest<- col_of_interest[col_of_interest <1100]
 mv <- mv[mv>1075]
 for (x in 1:length(mv)){
   y<- c(y, mv[[x]])
@@ -74,8 +77,8 @@ xnames<- c('Age', "Credit Card Holder", "Credit Card Balance", "Number of Credit
 
 
 #Bar Chart of Missing Values
-missing_val <- plot_ly(mv, x = ~variable, y = ~missingVal, type = 'bar', color = I("blue"), name = 'Highest Number of Missing Values') %>%
-  layout(xaxis = list(title = "Variable"), yaxis = list(title = 'Count'))
+missing_val <- plot_ly(mv, x = ~variable, y = ~missingVal, type = 'bar', color = I("blue")) %>%
+  layout( xaxis = list(title = "Variable"), yaxis = list(title = 'Count of Missing Values'))
 missing_val
 
 # Multicollinearity Check--------------------------------------------------------------------------
@@ -154,6 +157,7 @@ fctCols <- c('DDA', 'DIRDEP','SAV', 'ATM', 'CD', 'IRA', 'LOC', 'INV',
 
 #create a list of the continuous variables
 cont_var <- setdiff(colnames(insurance_t), fctCols)
+insurance_t[cont_var]
 
 #function to extract p-value for model
 get_significance <- function(variable){
@@ -168,8 +172,27 @@ pval<- lapply(cont_var, get_significance)
 pval <- unlist(pval,recursive=FALSE)
 #create a dataframe of significant continuous variables
 cont <- data.frame("Variable" = cont_var, 'PValues' = pval)
-cont<- filter(cont, PValues< 0.002)
 
 #export to CSV
-write_csv(o, file.path(file.dir, "significantvars.csv"))
- 
+write_csv(cont, file.path(file.dir, "significantvars.csv"))
+
+#Linearity for Variables--------------------------------------------------------------------------
+fctCols <- c('DDA', 'DIRDEP','SAV', 'ATM', 'CD', 'IRA', 'LOC', 'INV',
+             'ILS', 'MM', 'MTG', 'CC', 'SDB', 'HMOWN', 'MOVED', 'INAREA', 'NSF',
+             'INS', 'BRANCH', 'RES', 'CCPURC', 'MMCRED', 'CASHBK' )
+
+#create a list of the continuous variables
+cont_var <- setdiff(colnames(insurance_t), fctCols)
+contn<- insurance_t[cont_var]
+c <- insurance_t$INS
+contn<- cbind(contn, c)
+
+#GAM for continuous variables
+fit.gam <- gam(c ~ s(ACCTAGE) + s(AGE) + s(ATMAMT) + s(CCBAL) + s(CDBAL) + s(CHECKS) + s(CRSCORE) + s(DDABAL) + +s(DEP) + s(DEPAMT) + s(HMVAL) + s(INCOME) + s(INVBAL) + s(ILSBAL)+ s(IRABAL)+ s(LOCBAL) +s(LORES)+s(MMBAL)+ s(MTGBAL) +s(NSFAMT)+s(POS)+s(POSAMT) +s(PHONE) +s(SAVBAL)+s(TELLER),
+               data=contn, family=binomial(link = 'logit'), method = 'REML')
+results <- summary(fit.gam)
+
+#extract p-vlaues for predictors
+la_table<- data.frame(variables = rownames(results$s.table), pvalues= results$s.pv)
+#export p-values to csv 
+write_csv(la_table, file.path(file.dir, "linearitytable.csv"))
