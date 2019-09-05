@@ -7,12 +7,8 @@ library(haven)
 library(tidyverse)
 library(car)
 library(plotly)
-library(corrplot)
+library(lubridate)
 library(magrittr)
-library(mctest)
-library(faraway)
-library(MuMIn)
-library(MASS)
 
 ##########################################
 #                                        #
@@ -24,10 +20,11 @@ library(MASS)
 ##########################################
 
 
-#Import Insurance Training Data (from sas7bdat)
-insurance_t <- read_sas('/Users/mehak/Desktop/MSA/FALL2020/LogisticRegression/Homework1_LR/insurance_t.sas7bdat')
+# Load data -----------------------------------------------------------------------------
+f
+insurance_t <- read_sas('path to insurance_t.sas7bdat')
 
-#Explore Data
+# Explore data --------------------------------------------------------------------------
 #Names() give you the names of all the variables in your dataset
 names(insurance_t)
 
@@ -37,49 +34,51 @@ head(insurance_t)
 #Summary() gives you descriptive statistics for all of your variables 
 summary(insurance_t)
 
-
 #Applies the sd function to all columns of insurance_t
 sapply(insurance_t, sd)
 
-#Cleaning Data
-#Check the type of our variables
-sapply(insurance_t, class)
 
+# Clean data --------------------------------------------------------------------------
+#Check whether variable types are correct
+sapply(insurance_t, class)
+ 
+#label Categorical Variables as Factors
 #Create a list of the column names of categorical variables 
 fctCol <- c('DDA', 'DIRDEP','SAV', 'ATM', 'CD', 'IRA', 'LOC', 'INV',
-            'ILS', 'MM', 'MTG', 'CC', 'SDB', 'HMOWN', 'MOVED', 'INAREA',
+            'ILS', 'MM', 'MTG', 'CC', 'SDB', 'HMOWN', 'MOVED', 'INAREA', 'NSF',
             'INS', 'BRANCH', 'RES')
-#Below is a way to check the levels of these vars before conversion
-sapply(insurance_t[fctCol], unique)
-
-#converting categorical variables to fct
+ 
+#check the levels of these vars before conversion
+#sapply(insurance_t[fctCol], unique)
+ 
+#convert the columns in fctCol to factor types
 insurance_t<- insurance_t %>%
   mutate_at(fctCol, as.factor)
-
-#Check to see if this worked (should now be type 'factor')
+ 
+#check to see if your variables are correctly labeled as 'factor
 sapply(insurance_t, class)
 
-#Should be 0 and 1
-levels(insurance_t$DDA) 
-  
 
-#Outliers, Influential Observations, Missing Data
-#Option 1
+# Check for Missing Data --------------------------------------------------------------------------
+#number of missing values for each variable
 sapply(insurance_t, function(x) sum(is.na(x)))
-#Option 2
+
+#Double check
 colSums(is.na(insurance_t))
+ 
 
-#Check Assumptions: Multicollinearity 
+# Multicollinearity Check--------------------------------------------------------------------------
 
-#Select all Continuous variables 
+#Get Pairwise Correlations
+#create a subset with only continuous variables
 ins_num <- insurance_t %>%
   select_if(., is.numeric)
 
-#Get Pairwise Correlations
+#correlation matrix
 correlations <- cor(ins_num, use = 'complete.obs')
 
 #(adapted from sthd.com)
-#Format Correlations
+#format correlations
 flatten <- function(correl) {
   ut <- upper.tri(correl)
   data.frame(
@@ -88,44 +87,78 @@ flatten <- function(correl) {
     cor  =(correl)[ut]
   )}
 correlations<- flatten(correlations)
-
+ 
 #Get correlations above 0.7
 correlations %>%
   filter(cor >0.7)
-#POS and POSAMT - both describe point of sale interactions so this makes sense
-#MTBBAL and CCBAL - Mortgage and Credit Card Balances 
+#POS, POSAMT, MTBBAL, and CCBAL
 
-
-#Get Correlation with all other variables
-#Extract only eigenvalues (one for each predictor)
+# Get Correlation with all other Variables
+#extract only eigenvalues (one for each predictor)
 eigen(cor(ins_num, use = 'complete.obs'))$values
-
-#Condition Number: Calculated two ways 
-#A number above 100 indicates that there is a Multicollinearity problem
-#Option1:
+ 
+#Condition Number
+#ratio of the max eigenvalue to the min eigenvalue (>100 indicates multicollinearity)
 max(eigen(cor(ins_num, use = 'complete.obs'))$values)/min(eigen(cor(ins_num, use = 'complete.obs'))$values)
-#Option2:
-kappa(cor(ins_num, use = 'complete.obs'), exact = TRUE)
 
-#Get VIF 
+# VIF(>10 indicates collinearity)
 logit.model <- glm(INS ~., data = insurance_t, family = binomial(link = "logit"))
 ins_vif <- car::vif(logit.model, y.name = fctCol)
-#ILS, ILSBAL, MM, MMBAL, MTGBAL, CCBAL have VIFs above 10 
+#ILS, ILSBAL, MM, MMBAL, MTGBAL, CCBAL 
+ 
 
-
-#Chi-Square Test for Categorical Vars
-#Filter only factor variables 
+# Odds Ratio --------------------------------------------------------------------------
+#create a subset of binrary predictor variables 
 ins_fct <- insurance_t %>%
   select_if(., is.factor)%>%
-  select(DDA:INAREA, BRANCH, RES, INS) %>%
+  select(DDA:INAREA, NSF, INS) %>%
   drop_na()
+ 
+#subset colnames of binary predictors
+col<- colnames(ins_fct)
+col <- col[1:17]
 
-colnames(ins_fct)
+#odds ratio function
+odds_ratio <- function(variable) {
+  logit.model <- glm(ins_fct$INS ~ ins_fct[[variable]], family = binomial(link = "logit"))
+  or <- exp(cbind(coef(logit.model), confint(logit.model)))
+  return(or[2])
+}
 
+#compute OR of binary predictors
+out <- lapply(col, odds_ratio)
 
+#convert output to data.frame
+out <- unlist(out,recursive=FALSE)
+or <- data.frame("var" = col, 'OR' = out)
 
-  
+#export to CSV
+write_csv(or, file.path(file.dir, "oddsratio.csv"))
 
+ 
+# Calculate Significance for Continuous Variables--------------------------------------------------------------------------
+fctCols <- c('DDA', 'DIRDEP','SAV', 'ATM', 'CD', 'IRA', 'LOC', 'INV',
+             'ILS', 'MM', 'MTG', 'CC', 'SDB', 'HMOWN', 'MOVED', 'INAREA', 'NSF',
+             'INS', 'BRANCH', 'RES', 'CCPURC', 'MMCRED', 'CASHBK' )
 
+#create a list of the continuous variables
+cont_var <- setdiff(colnames(insurance_t), fctCols)
 
+#function to extract p-value for model
+get_significance <- function(variable){
+  res <- "INS"
+  pred <- as.character(variable)
+  logit.model<- glm(as.formula(paste0(res, "~", pred)), data=insurance_t, family = binomial(link = "logit"))
+  return(coef(summary(logit.model))[2,'Pr(>|z|)'])
+}
 
+#compute p-values for list of continuous variables
+pval<- lapply(cont_var, get_significance)
+pval <- unlist(pval,recursive=FALSE)
+#create a dataframe of significant continuous variables
+cont <- data.frame("Variable" = cont_var, 'PValues' = pval)
+cont<- filter(cont, PValues< 0.002)
+
+#export to CSV
+write_csv(o, file.path(file.dir, "significantvars.csv"))
+ 
