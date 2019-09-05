@@ -61,11 +61,22 @@ sapply(insurance_t, class)
 
 # Check for Missing Data --------------------------------------------------------------------------
 #number of missing values for each variable
-sapply(insurance_t, function(x) sum(is.na(x)))
+mv <- lapply(insurance_t, function(x) sum(is.na(x)))
+mv <- mv[mv>1075]
+for (x in 1:length(mv)){
+  y<- c(y, mv[[x]])
+}
+xname<-c("Total Income", "Homeowner","Length of Residence" , "Value of Home", "Age")
+mv <-data.frame("variable" = xname, "missingVal" = y) 
+xnames<- c('Age', "Credit Card Holder", "Credit Card Balance", "Number of Credit Card Purchase", "Homeowner", "Value of Home", "Total Income", "Investment Account Holder"
+           , "Investment Account Balance", "Length of Residence (Years)", "Number of Telephone Banking Interactions", "Number of Point of Sale Interactions",
+            'Total Amt for Point of Sale')
 
-#Double check
-colSums(is.na(insurance_t))
- 
+
+#Bar Chart of Missing Values
+missing_val <- plot_ly(mv, x = ~variable, y = ~missingVal, type = 'bar', color = I("blue"), name = 'Highest Number of Missing Values') %>%
+  layout(xaxis = list(title = "Variable"), yaxis = list(title = 'Count'))
+missing_val
 
 # Multicollinearity Check--------------------------------------------------------------------------
 
