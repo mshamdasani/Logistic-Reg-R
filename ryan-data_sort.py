@@ -22,6 +22,11 @@ vals = vals[np.logical_not(np.isnan(vals))]
 
 #Creating for loop that goes through all variables and determines the data type
 
+#initialzing lists 
+variable = []
+data_type = []
+test = []
+
 for element in list(training_df):
     col = training_df[str(element)]
     
@@ -35,9 +40,23 @@ for element in list(training_df):
         #If there is only two unique values in the array, then the data is binary
         if len(unique_vals)==2:
             training_df[str(element)].astype('bool')
-            print(str(element) + ' is binary.')
-    
+            print(str(element) + ' is binary,')
+            data_type.append('binary')
+        else:
+            print(str(element) + ' is contiuous.')
+            data_type.append('continuous')
+    #if the try statement fails, then the data is nominal.
     except:
-        print(str(element)+' is nominal.')
+        print(str(element)+' is nominal,')
+        data_type.append('nominal')
+    variable.append(element)
+    test.append('')
     
+#creating dictionary of variables, and associated data types
+var_dict = {'variable': variable,'data_type': data_type,'test':test}
+    
+variable_types = pd.DataFrame(var_dict)
+variable_types.to_csv('C:\\Users\\ryanm\\OneDrive\\Documents\\Logistic_hw\\variable_types.csv')
 
+
+training_df.RES.value_counts()
