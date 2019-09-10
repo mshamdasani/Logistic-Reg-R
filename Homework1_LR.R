@@ -1,7 +1,3 @@
-#Install Packages
-install.packages(c("corrplot", "haven", "tidyverse", "car", "plotly", 'mctest', 'faraway'))
-install.packages("MuMIn")
-
 #Load Packages 
 library(haven)
 library(tidyverse)
@@ -10,6 +6,10 @@ library(plotly)
 library(lubridate)
 library(magrittr)
 library(broom)
+library(mgcv)
+library(corrplot)
+library(faraway)
+library(mctest)
 
 ##########################################
 #                                        #
@@ -22,8 +22,7 @@ library(broom)
 
 
 # Load data -----------------------------------------------------------------------------
-f
-insurance_t <- read_sas('path to insurance_t.sas7bdat')
+insurance_t <- read_sas('insurance_t.sas7bdat')
 
 # Explore data --------------------------------------------------------------------------
 #Names() give you the names of all the variables in your dataset
@@ -33,7 +32,7 @@ names(insurance_t)
 head(insurance_t)
 
 #Summary() gives you descriptive statistics for all of your variables 
-summary(insurance_t)
+#summary(insurance_t)
 
 #Applies the sd function to all columns of insurance_t
 sapply(insurance_t, sd)
@@ -66,6 +65,7 @@ mv <- lapply(insurance_t, function(x) sum(is.na(x)))
 col_of_interest<- mv[mv> 1000] 
 col_of_interest<- col_of_interest[col_of_interest <1100]
 mv <- mv[mv>1075]
+y<-c()
 for (x in 1:length(mv)){
   y<- c(y, mv[[x]])
 }
@@ -77,8 +77,12 @@ xnames<- c('Age', "Credit Card Holder", "Credit Card Balance", "Number of Credit
 
 
 #Bar Chart of Missing Values
+t <- list(
+  family = "sans serif bold",
+  size = 16,
+  color = 'black')
 missing_val <- plot_ly(mv, x = ~variable, y = ~missingVal, type = 'bar', color = I("blue")) %>%
-  layout( xaxis = list(title = "Variable"), yaxis = list(title = 'Count of Missing Values'))
+  layout(xaxis = list(title = "<B>Variable</B>", font = t), yaxis = list(title = '<B>Count of Missing Values</B>', font=t))
 missing_val
 
 # Multicollinearity Check--------------------------------------------------------------------------
