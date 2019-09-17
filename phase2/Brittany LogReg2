@@ -25,39 +25,32 @@ names(insurance_t)
 df <- data.frame(insurance_t)
 
 #turn categorical variables in the dataset into factors
-insurance_t <- insurance_t %>%
+df <- df %>%
   mutate_at(fctCol, as.factor)
 
 #changing data to add missing category to categorical with missing
-insurance_t = insurance_t %>% mutate_if(is.factor, fct_explicit_na, na_level= "M")
-names(insurance_t)
+df = df %>% mutate_if(is.factor, fct_explicit_na, na_level= "M")
+names(df)
 
-#imputing median for continuous variables to get rid of missing
-impute(insurance_t$PHONE_Bin, median)
-impute(insurance_t$POS_Bin, median)
-impute(insurance_t$INVBAL_Bin, median)
-impute(insurance_t$CCBAL_Bin)
-impute(insurance_t$AGE_Bin)
-impute(insurance_t$CCPURC)
-impute(insurance_t$HMVAL_Bin)
+insurance_t[, fctCol] <- lapply(insurance_t[, fctCol], function(x) fct_explicit_na(x, na_level = "M")) %>% as.data.frame
 
 #checking levels of INV to make sure "M" category is there
-levels(insurance_t$INV)
+levels(df$BRANCH)
 
 #creating a logit model with new data to check separation
-logit.model.w <- glm(INS ~., data=insurance_t, family = binomial(link = "logit") )
+logit.model.w <- glm(INS ~., data=df, family = binomial(link = "logit") )
 summary(logit.model.w)
 
-#best subsets
-glmulti.lm.out <- glmulti(INS ~.,
-                        data=insurance_t,
-                        level=1,
-                        method='g',
-                        crit="bic",
-                        confsetsize = 5,
-                        plotty=TRUE,
-                        fitfunction = "glm",
-                        family = binomial)
+#best subsets 
+glmulti.lm.out <- glmulti(INS=.,
+                          data=insurance_t,
+                          level=2,
+                          method='g',
+                          crit="bic",
+                          confsetsize = 5,
+                          plotty=TRUE,
+                          fitfunction = "glm",
+                          family = binomial)
 #gives 5 best models
 glmulti.lm.out@formulas
 
@@ -66,10 +59,10 @@ summary(glmulti.lm.out@objects[[1]])
 
 #creating all the different models
 
-full.model <- glm(INS ~., data=na.omit(insurance_t),
+full.model <- glm(INS ~., data=na.omit(df),
                   family=binomial(link = "logit"))
 
-empty.model <- glm(INS ~ 1, data=insurance_t,
+empty.model <- glm(INS ~ 1, data=df,
                    family= binomial(link = "logit"))
 
 #backwards model with AIC
@@ -82,3 +75,14 @@ fm2 <- summary(back.model)
 plot(fm2$aic, xlab="Parameter", ylab="AIC")
 summ(back.model)
 summ(back.model2)
+
+#testing for interactions and forward selection
+forward <- glm(INS ~ (DDA+DIRDEP+NSF+SAV+ATM+IRA+INV+ILS+MM+MTG+CC+DDABAL_Bin+CHECKS_Bin+TELLER_Bin+SAVBAL_Bin+ATMAMT_Bin+CDBAL_Bin)^2,
+              data=na.omit(insurance_t), family=binomial(link = "logit"))
+
+summary(forward)
+
+forward.model <- step(empty.model, alpha = 0.0001, direction="forward", trace=1,
+                      ~ (DDA+DIRDEP+NSF+SAV+ATM+IRA+INV+ILS+MM+MTG+CC+DDABAL_Bin+CHECKS_Bin+TELLER_Bin+SAVBAL_Bin+ATMAMT_Bin+CDBAL_Bin)^2)
+
+summ(forward.model)
