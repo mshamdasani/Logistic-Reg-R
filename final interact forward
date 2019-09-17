@@ -1,0 +1,263 @@
+Step:  AIC=9340.82
+INS ~ NSF + MTG + ILS + INV + IRA + DDA + TELLER_Bin + CC + ATMAMT_Bin + 
+    CHECKS_Bin + MM + CDBAL_Bin + DDABAL_Bin + CC:DDABAL_Bin + 
+    ATMAMT_Bin:DDABAL_Bin + IRA:DDA + DDA:CDBAL_Bin + TELLER_Bin:CDBAL_Bin + 
+    IRA:CDBAL_Bin + ILS:CC + IRA:TELLER_Bin + ATMAMT_Bin:CHECKS_Bin + 
+    MM:DDABAL_Bin + DDA:MM + MM:CDBAL_Bin + MTG:ILS + NSF:ILS + 
+    NSF:MTG + ILS:MM
+
+                        Df Deviance    AIC
+<none>                       9168.8 9340.8
+ IRA:CC                 2   9164.9 9340.9
+ MTG:ATMAMT_Bin         2   9165.0 9341.0
+ CHECKS_Bin:MM          3   9163.1 9341.1
+ IRA:MM                 1   9167.1 9341.1
+ CHECKS_Bin:CDBAL_Bin   6   9157.1 9341.1
+ ILS:IRA                1   9167.2 9341.2
+ MTG:MM                 1   9167.2 9341.2
+ INV:CC                 1   9167.3 9341.3
+ INV:MM                 2   9165.3 9341.3
+ TELLER_Bin:ATMAMT_Bin  4   9161.3 9341.3
+ NSF:CHECKS_Bin         3   9163.8 9341.8
+ INV:IRA                2   9165.9 9341.9
+ MTG:INV                2   9166.0 9342.0
+ ILS:CDBAL_Bin          2   9166.1 9342.1
+ MTG:DDA                1   9168.4 9342.4
+ MTG:TELLER_Bin         2   9166.6 9342.6
+ NSF:MM                 1   9168.7 9342.7
+ ILS:INV                1   9168.8 9342.8
+ ILS:DDA                1   9168.8 9342.8
+ MTG:IRA                1   9168.8 9342.8
+ TELLER_Bin:MM          2   9166.8 9342.8
+ NSF:IRA                1   9168.8 9342.8
+ MTG:CC                 1   9168.8 9342.8
+ ATMAMT_Bin:CDBAL_Bin   4   9162.9 9342.9
+ ATMAMT_Bin:MM          2   9166.9 9342.9
+ NSF:CDBAL_Bin          2   9166.9 9342.9
+ NSF:TELLER_Bin         2   9167.1 9343.1
+ NSF:INV                2   9167.1 9343.1
+ CC:CHECKS_Bin          6   9159.2 9343.2
+ IRA:DDABAL_Bin         6   9159.2 9343.2
+ IRA:CHECKS_Bin         3   9165.3 9343.3
+ DDA:ATMAMT_Bin         2   9167.4 9343.4
+ IRA:ATMAMT_Bin         2   9167.4 9343.4
+ CC:MM                  2   9167.4 9343.4
+ TELLER_Bin:CC          4   9163.5 9343.5
+ INV:DDA                2   9167.6 9343.6
+ INV:DDABAL_Bin         7   9157.7 9343.7
+ INV:ATMAMT_Bin         4   9163.8 9343.8
+ ILS:TELLER_Bin         2   9168.0 9344.0
+ DDA:CC                 2   9168.1 9344.1
+ MTG:CDBAL_Bin          2   9168.3 9344.3
+ CC:CDBAL_Bin           4   9164.3 9344.3
+ NSF:ATMAMT_Bin         2   9168.4 9344.4
+ NSF:CC                 2   9168.5 9344.5
+ ILS:CHECKS_Bin         3   9166.5 9344.5
+ ILS:ATMAMT_Bin         2   9168.5 9344.5
+ INV:CDBAL_Bin          4   9164.6 9344.6
+ INV:CHECKS_Bin         6   9161.3 9345.3
+ INV:TELLER_Bin         4   9166.0 9346.0
+ MTG:CHECKS_Bin         3   9168.0 9346.0
+ MTG:DDABAL_Bin         7   9160.7 9346.7
+ CC:ATMAMT_Bin          4   9167.5 9347.5
+ TELLER_Bin:CHECKS_Bin  6   9166.6 9350.6
+ NSF:DDABAL_Bin         7   9164.7 9350.7
+ ILS:DDABAL_Bin         7   9164.7 9350.7
+ CHECKS_Bin:DDABAL_Bin 21   9139.4 9353.4
+ CDBAL_Bin:DDABAL_Bin  14   9154.9 9354.9
+ TELLER_Bin:DDABAL_Bin 14   9156.1 9356.1
+ 
+ 
+ 
+ MODEL FIT:
+χ²(85) = 1761.31138134, p = 0.00000000
+Pseudo-R² (Cragg-Uhler) = 0.25870540
+Pseudo-R² (McFadden) = 0.16114276
+AIC = 9340.81909834, BIC = 9946.88113928 
+
+Standard errors: MLE
+--------------------------------------------------------
+                                       Est.         S.E.
+----------------------------- ------------- ------------
+(Intercept)                     -0.48257231   0.10071746
+NSF1                             0.14155565   0.10862360
+MTG1                            -0.50028917   0.13047802
+ILS1                            -1.45488866   0.41399252
+INV1                             0.50135863   0.15280343
+INVM                            -0.36241929   0.17135086
+IRA1                             0.28819068   0.17857636
+DDA1                            -2.52139958   0.50159624
+TELLER_Bin2                      0.31318855   0.07208276
+TELLER_Bin3                      0.65428955   0.09453644
+CC1                              0.42870288   0.11532356
+CCM                                                     
+ATMAMT_Bin2                      0.29819483   0.14811267
+ATMAMT_Bin3                      0.53962092   0.24903475
+CHECKS_Bin2                      0.03330532   0.14997105
+CHECKS_Bin3                      0.03474557   0.16114984
+CHECKS_Bin4                     -0.40051976   0.13710441
+MM1                              0.49080814   0.12496036
+CDBAL_Bin2                       1.08677792   0.22001110
+CDBAL_Bin3                       1.29044735   0.19604965
+DDABAL_Bin2                      0.41347314   0.54575153
+DDABAL_Bin3                      1.05522257   0.53036584
+DDABAL_Bin4                      1.30428262   0.52461900
+DDABAL_Bin5                      1.78573399   0.53090245
+DDABAL_Bin6                      2.36686099   0.52336093
+DDABAL_Bin7                      2.37809172   0.52424535
+DDABAL_Bin8                      2.99593011   0.53225677
+CC1:DDABAL_Bin2                  0.03686191   0.29738937
+CCM:DDABAL_Bin2                  1.05386324   0.41037563
+CC1:DDABAL_Bin3                  0.45032768   0.22304402
+CCM:DDABAL_Bin3                  0.36597531   0.38046375
+CC1:DDABAL_Bin4                  0.31105143   0.18849703
+CCM:DDABAL_Bin4                 -0.15390831   0.31583903
+CC1:DDABAL_Bin5                 -0.17629534   0.20365424
+CCM:DDABAL_Bin5                  0.30335138   0.30844195
+CC1:DDABAL_Bin6                 -0.38823134   0.18389658
+CCM:DDABAL_Bin6                 -0.32278105   0.30010147
+CC1:DDABAL_Bin7                 -0.23696408   0.17914124
+CCM:DDABAL_Bin7                 -0.05476595   0.26579496
+CC1:DDABAL_Bin8                 -0.36699689   0.22037381
+CCM:DDABAL_Bin8                 -0.75282226   0.31930871
+ATMAMT_Bin2:DDABAL_Bin2         -0.19098286   0.30205010
+ATMAMT_Bin3:DDABAL_Bin2          2.54697996   0.96679771
+ATMAMT_Bin2:DDABAL_Bin3         -0.67230038   0.27529638
+ATMAMT_Bin3:DDABAL_Bin3          1.41887217   0.81377151
+ATMAMT_Bin2:DDABAL_Bin4         -0.39461298   0.25771176
+ATMAMT_Bin3:DDABAL_Bin4          1.20693968   0.74227720
+ATMAMT_Bin2:DDABAL_Bin5         -0.41158884   0.26813725
+ATMAMT_Bin3:DDABAL_Bin5          0.88636895   0.75302971
+ATMAMT_Bin2:DDABAL_Bin6         -0.47695526   0.25780493
+ATMAMT_Bin3:DDABAL_Bin6          0.48241116   0.72863951
+ATMAMT_Bin2:DDABAL_Bin7         -0.15740264   0.25729115
+ATMAMT_Bin3:DDABAL_Bin7          0.80267489   0.71248347
+ATMAMT_Bin2:DDABAL_Bin8          0.11836277   0.28750377
+ATMAMT_Bin3:DDABAL_Bin8          0.65280296   0.74426197
+IRA1:DDA1                        1.14741707   0.27774459
+DDA1:CDBAL_Bin2                  0.11117626   0.27024999
+DDA1:CDBAL_Bin3                  1.00810760   0.33495800
+TELLER_Bin2:CDBAL_Bin2          -0.63516774   0.24125973
+TELLER_Bin3:CDBAL_Bin2          -0.17127932   0.30817711
+TELLER_Bin2:CDBAL_Bin3          -0.78903995   0.38240717
+TELLER_Bin3:CDBAL_Bin3          -0.04124314   0.54258754
+IRA1:CDBAL_Bin2                 -1.00971855   0.36076155
+IRA1:CDBAL_Bin3                 -0.26144085   0.36632260
+ILS1:CC1                         0.99622716   0.42305569
+ILS1:CCM                                                
+IRA1:TELLER_Bin2                -0.59711310   0.30428089
+IRA1:TELLER_Bin3                -0.95208928   0.36102952
+ATMAMT_Bin2:CHECKS_Bin2          0.00357441   0.20625840
+ATMAMT_Bin3:CHECKS_Bin2          0.54447030   0.76909511
+ATMAMT_Bin2:CHECKS_Bin3         -0.09014228   0.21918788
+ATMAMT_Bin3:CHECKS_Bin3         -0.62798164   0.70564151
+ATMAMT_Bin2:CHECKS_Bin4         -0.30589723   0.19278485
+ATMAMT_Bin3:CHECKS_Bin4         -0.83392798   0.66664517
+MM1:DDABAL_Bin2                 -0.86671143   1.48925757
+MM1:DDABAL_Bin3                 -2.78807126   1.40257067
+MM1:DDABAL_Bin4                 -2.65578115   1.37052804
+MM1:DDABAL_Bin5                 -2.13055149   1.37295172
+MM1:DDABAL_Bin6                 -2.69512077   1.36708245
+MM1:DDABAL_Bin7                 -2.90802882   1.36188418
+MM1:DDABAL_Bin8                 -3.16850108   1.36939270
+DDA1:MM1                         2.82527287   1.35099305
+MM1:CDBAL_Bin2                  -0.51973886   0.26825037
+MM1:CDBAL_Bin3                  -0.45367760   0.27757265
+MTG1:ILS1                        0.71774685   0.41220658
+NSF1:ILS1                       -1.11226096   0.59338506
+NSF1:MTG1                        0.86995308   0.47952099
+ILS1:MM1                         0.61200389   0.37123105
+--------------------------------------------------------
+ 
+--------------------------------------------------------
+                                     z val.            p
+----------------------------- ------------- ------------
+(Intercept)                     -4.79134718   0.00000166
+NSF1                             1.30317591   0.19251471
+MTG1                            -3.83427915   0.00012593
+ILS1                            -3.51428736   0.00044094
+INV1                             3.28106916   0.00103414
+INVM                            -2.11507127   0.03442387
+IRA1                             1.61382323   0.10656577
+DDA1                            -5.02675133   0.00000050
+TELLER_Bin2                      4.34484665   0.00001394
+TELLER_Bin3                      6.92102983   0.00000000
+CC1                              3.71739194   0.00020129
+CCM                                                     
+ATMAMT_Bin2                      2.01329719   0.04408337
+ATMAMT_Bin3                      2.16684986   0.03024630
+CHECKS_Bin2                      0.22207831   0.82425292
+CHECKS_Bin3                      0.21561034   0.82929150
+CHECKS_Bin4                     -2.92127549   0.00348601
+MM1                              3.92771075   0.00008576
+CDBAL_Bin2                       4.93965035   0.00000078
+CDBAL_Bin3                       6.58224768   0.00000000
+DDABAL_Bin2                      0.75762160   0.44867755
+DDABAL_Bin3                      1.98961262   0.04663362
+DDABAL_Bin4                      2.48615208   0.01291328
+DDABAL_Bin5                      3.36358210   0.00076938
+DDABAL_Bin6                      4.52242583   0.00000611
+DDABAL_Bin7                      4.53621905   0.00000573
+DDABAL_Bin8                      5.62873082   0.00000002
+CC1:DDABAL_Bin2                  0.12395167   0.90135354
+CCM:DDABAL_Bin2                  2.56804538   0.01022738
+CC1:DDABAL_Bin3                  2.01900807   0.04348638
+CCM:DDABAL_Bin3                  0.96191900   0.33609029
+CC1:DDABAL_Bin4                  1.65016623   0.09890894
+CCM:DDABAL_Bin4                 -0.48729985   0.62604585
+CC1:DDABAL_Bin5                 -0.86566005   0.38667662
+CCM:DDABAL_Bin5                  0.98349585   0.32536345
+CC1:DDABAL_Bin6                 -2.11113948   0.03476032
+CCM:DDABAL_Bin6                 -1.07557306   0.28211824
+CC1:DDABAL_Bin7                 -1.32277794   0.18590924
+CCM:DDABAL_Bin7                 -0.20604587   0.83675508
+CC1:DDABAL_Bin8                 -1.66533801   0.09584534
+CCM:DDABAL_Bin8                 -2.35766283   0.01839039
+ATMAMT_Bin2:DDABAL_Bin2         -0.63228869   0.52719825
+ATMAMT_Bin3:DDABAL_Bin2          2.63444972   0.00842738
+ATMAMT_Bin2:DDABAL_Bin3         -2.44209667   0.01460224
+ATMAMT_Bin3:DDABAL_Bin3          1.74357563   0.08123312
+ATMAMT_Bin2:DDABAL_Bin4         -1.53121836   0.12571544
+ATMAMT_Bin3:DDABAL_Bin4          1.62599590   0.10395053
+ATMAMT_Bin2:DDABAL_Bin5         -1.53499315   0.12478551
+ATMAMT_Bin3:DDABAL_Bin5          1.17707035   0.23916743
+ATMAMT_Bin2:DDABAL_Bin6         -1.85006261   0.06430453
+ATMAMT_Bin3:DDABAL_Bin6          0.66207110   0.50792566
+ATMAMT_Bin2:DDABAL_Bin7         -0.61176858   0.54069088
+ATMAMT_Bin3:DDABAL_Bin7          1.12658738   0.25991698
+ATMAMT_Bin2:DDABAL_Bin8          0.41169119   0.68056578
+ATMAMT_Bin3:DDABAL_Bin8          0.87711450   0.38042445
+IRA1:DDA1                        4.13119508   0.00003609
+DDA1:CDBAL_Bin2                  0.41138303   0.68079169
+DDA1:CDBAL_Bin3                  3.00965376   0.00261546
+TELLER_Bin2:CDBAL_Bin2          -2.63271344   0.00847058
+TELLER_Bin3:CDBAL_Bin2          -0.55578210   0.57835983
+TELLER_Bin2:CDBAL_Bin3          -2.06335029   0.03907936
+TELLER_Bin3:CDBAL_Bin3          -0.07601195   0.93940959
+IRA1:CDBAL_Bin2                 -2.79885301   0.00512845
+IRA1:CDBAL_Bin3                 -0.71369020   0.47541877
+ILS1:CC1                         2.35483691   0.01853084
+ILS1:CCM                                                
+IRA1:TELLER_Bin2                -1.96237462   0.04971889
+IRA1:TELLER_Bin3                -2.63715082   0.00836056
+ATMAMT_Bin2:CHECKS_Bin2          0.01732977   0.98617354
+ATMAMT_Bin3:CHECKS_Bin2          0.70793624   0.47898485
+ATMAMT_Bin2:CHECKS_Bin3         -0.41125579   0.68088498
+ATMAMT_Bin3:CHECKS_Bin3         -0.88994430   0.37349579
+ATMAMT_Bin2:CHECKS_Bin4         -1.58672859   0.11257413
+ATMAMT_Bin3:CHECKS_Bin4         -1.25093230   0.21095918
+MM1:DDABAL_Bin2                 -0.58197551   0.56058318
+MM1:DDABAL_Bin3                 -1.98782943   0.04683056
+MM1:DDABAL_Bin4                 -1.93777951   0.05265013
+MM1:DDABAL_Bin5                 -1.55180365   0.12070921
+MM1:DDABAL_Bin6                 -1.97143980   0.04867359
+MM1:DDABAL_Bin7                 -2.13529818   0.03273666
+MM1:DDABAL_Bin8                 -2.31380018   0.02067869
+DDA1:MM1                         2.09125641   0.03650508
+MM1:CDBAL_Bin2                  -1.93751404   0.05268254
+MM1:CDBAL_Bin3                  -1.63444632   0.10216517
+MTG1:ILS1                        1.74123096   0.08164310
+NSF1:ILS1                       -1.87443372   0.06087067
+NSF1:MTG1                        1.81421270   0.06964499
+ILS1:MM1                         1.64857947   0.09923382
+--------------------------------------------------------
