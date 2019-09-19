@@ -1,0 +1,88 @@
+#reading in data:
+library(haven)
+library(dplyr)
+library(dummies)
+library(tidyverse)
+library(forcats)
+library(Hmisc)
+library(glmulti)
+library(jtools)
+options("jtools-digits" = 8)
+
+#read in dataset and create list of factors
+#list of  cat variables that contained missing values:
+#INV, CC, HMOWN, RES
+#contin: PHONE, POSAMT, INVBAL, CCBAL, AGE, CCPURC, HMVAL
+insurance_t <-read_sas("C:\\Users\\17046\\Documents\\MSA 20\\Logistic Reg\\Homework2_LR\\insurance_t_bin.sas7bdat")
+
+fctCol <- c('DDA', 'DIRDEP','SAV', 'ATM', 'CD', 'IRA',
+            'LOC', 'INV','ILS', 'MM', 'MTG', 'CC', 'SDB', 
+            'HMOWN', 'MOVED', 'INAREA', 'NSF','INS', 
+            'BRANCH', 'RES',)
+
+names(insurance_t)
+
+df <- data.frame(insurance_t)
+
+#turn categorical variables in the dataset into factors
+df <- df %>%
+  mutate_at(fctCol, as.factor)
+
+#changing data to add missing category to categorical with missing
+df = df %>% mutate_if(is.factor, fct_explicit_na, na_level= "M")
+names(df)
+
+insurance_t[, fctCol] <- lapply(insurance_t[, fctCol], function(x) fct_explicit_na(x, na_level = "M")) %>% as.data.frame
+
+#checking levels of INV to make sure "M" category is there
+levels(df$BRANCH)
+
+#creating a logit model with new data to check separation
+logit.model.w <- glm(INS ~., data=df, family = binomial(link = "logit") )
+summary(logit.model.w)
+
+#best subsets 
+glmulti.lm.out <- glmulti(INS=.,
+                          data=insurance_t,
+                          level=2,
+                          method='g',
+                          crit="bic",
+                          confsetsize = 5,
+                          plotty=TRUE,
+                          fitfunction = "glm",
+                          family = binomial)
+#gives 5 best models
+glmulti.lm.out@formulas
+
+#show result for best model
+summary(glmulti.lm.out@objects[[1]])
+
+#creating all the different models
+
+full.model <- glm(INS ~., data=na.omit(df),
+                  family=binomial(link = "logit"))
+
+empty.model <- glm(INS ~ 1, data=df,
+                   family= binomial(link = "logit"))
+
+#backwards model with AIC
+back.model <- step(full.model, alpha=0.0001, direction = "backward")
+
+#backwards model with BIC
+back.model2 <- step(full.model, alpha=0.0001, direction = "backward", k=log(8495))
+
+fm2 <- summary(back.model)
+plot(fm2$aic, xlab="Parameter", ylab="AIC")
+summ(back.model)
+summ(back.model2)
+
+#testing for interactions and forward selection
+forward <- glm(INS ~ (DDA+DIRDEP+NSF+SAV+ATM+IRA+INV+ILS+MM+MTG+CC+DDABAL_Bin+CHECKS_Bin+TELLER_Bin+SAVBAL_Bin+ATMAMT_Bin+CDBAL_Bin)^2,
+              data=na.omit(insurance_t), family=binomial(link = "logit"))
+
+summary(forward)
+
+forward.model <- step(empty.model, alpha = 0.0001, direction="forward", trace=1,
+                      ~ (DDA+DIRDEP+NSF+SAV+ATM+IRA+INV+ILS+MM+MTG+CC+DDABAL_Bin+CHECKS_Bin+TELLER_Bin+SAVBAL_Bin+ATMAMT_Bin+CDBAL_Bin)^2)
+
+summ(forward.model)

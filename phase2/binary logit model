@@ -1,0 +1,65 @@
+Step:  AIC=9051.63
+INS ~ DDA + NSF + IRA + INV + ILS + MM + MTG + CC + CHECKS_Bin + 
+    TELLER_Bin + SAVBAL_Bin + ATMAMT_Bin + CDBAL_Bin + DDABAL_Bin
+
+             Df Deviance    AIC
+<none>            8762.1 9051.6
+- NSF         1   8772.1 9052.6
+- MTG         1   8773.3 9053.7
+- ILS         1   8777.8 9058.2
+- INV         1   8778.0 9058.5
+- IRA         1   8779.8 9060.2
+- DDA         1   8782.0 9062.5
+- TELLER_Bin  2   8798.6 9070.0
+- CC          1   8790.1 9070.6
+- ATMAMT_Bin  2   8801.5 9072.9
+- CHECKS_Bin  3   8852.2 9114.6
+- MM          1   8858.9 9139.4
+- CDBAL_Bin   2   8939.8 9211.2
+- DDABAL_Bin  7   9057.5 9283.6
+- SAVBAL_Bin  6   9362.0 9597.2
+
+MODEL FIT:
+χ²(31) = 2168.02, p = 0.00
+Pseudo-R² (Cragg-Uhler) = 0.31
+Pseudo-R² (McFadden) = 0.20
+AIC = 8826.12, BIC = 9051.63 
+
+Standard errors: MLE
+------------------------------------------------
+                     Est.   S.E.   z val.      p
+----------------- ------- ------ -------- ------
+(Intercept)         -0.88   0.08   -11.72   0.00
+DDA1                -1.63   0.42    -3.83   0.00
+NSF1                 0.34   0.11     3.21   0.00
+IRA1                 0.47   0.11     4.19   0.00
+INV1                 0.62   0.16     3.94   0.00
+INVM                -0.52   0.09    -5.68   0.00
+ILS1                -0.50   0.13    -3.88   0.00
+MM1                  0.78   0.08     9.83   0.00
+MTG1                -0.41   0.13    -3.30   0.00
+CC1                  0.32   0.06     5.30   0.00
+CCM                                             
+CHECKS_Bin2          0.05   0.10     0.48   0.63
+CHECKS_Bin3         -0.04   0.11    -0.34   0.73
+CHECKS_Bin4         -0.61   0.10    -6.05   0.00
+TELLER_Bin2          0.23   0.07     3.32   0.00
+TELLER_Bin3          0.54   0.09     6.00   0.00
+SAVBAL_Bin2         -0.52   0.16    -3.26   0.00
+SAVBAL_Bin3         -0.28   0.14    -1.99   0.05
+SAVBAL_Bin4          0.27   0.09     3.01   0.00
+SAVBAL_Bin5          0.92   0.10     9.56   0.00
+SAVBAL_Bin6          1.32   0.09    14.29   0.00
+SAVBAL_Bin7          1.74   0.09    18.51   0.00
+ATMAMT_Bin2         -0.11   0.06    -1.83   0.07
+ATMAMT_Bin3          0.53   0.11     5.00   0.00
+CDBAL_Bin2           0.68   0.10     6.85   0.00
+CDBAL_Bin3           1.41   0.12    11.31   0.00
+DDABAL_Bin2          0.23   0.43     0.52   0.60
+DDABAL_Bin3          0.50   0.43     1.17   0.24
+DDABAL_Bin4          0.81   0.42     1.91   0.06
+DDABAL_Bin5          1.06   0.42     2.50   0.01
+DDABAL_Bin6          1.31   0.42     3.10   0.00
+DDABAL_Bin7          1.57   0.42     3.70   0.00
+DDABAL_Bin8          2.18   0.43     5.09   0.00
+------------------------------------------------
