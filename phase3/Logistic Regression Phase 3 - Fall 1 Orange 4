@@ -1,0 +1,117 @@
+install.packages("MASS")
+install.packages("car")
+install.packages("DescTools")
+install.packages("ggplot2")
+install.packages("ROCR")
+install.packages("InformationValue")
+
+
+library(DescTools)
+library(ggplot2)
+library(ROCR)
+library(InformationValue)
+library(haven)
+library(dplyr)
+library(dummies)
+library(tidyverse)
+library(forcats)
+library(Hmisc)
+library(glmulti)
+library(jtools)
+options("jtools-digits" = 8)
+library(MASS)
+library(car)
+library(rJava)
+library(givitiR)
+
+# Re-use final model from Phase 2 (Assuming backward selection)
+
+#------------------------------------------------------------------
+# FROM PHASE 2
+#------------------------------------------------------------------
+
+# Read in SAS table
+ins_t <-read_sas("C:\\Users\\dande\\Desktop\\MAIN\\Documents\\NCState Advanced Analytics\\Fall 2019\\Logistic Regression\\Homework\\Homework 2\\insurance_t_bin.sas7bdat")
+
+
+# Data frame creation from imported data
+df <- data.frame(ins_t)
+
+names <- names(df)
+df[, names] <- lapply(df[,names], factor)
+
+# Change missing levels to missing category
+
+df <- df %>% mutate_if(is.factor, fct_explicit_na, na_level= "M")
+
+# Create logistic regression model with all variables
+logit.model.w <- glm(INS ~., data=df, family = binomial(link = "logit") )
+summary(logit.model.w)
+
+# Creates full model
+full.model <- glm(INS ~ DDA+CASHBK+DIRDEP+NSF+SAV+ATM+CD+IRA+LOC+INV+ILS+MM+MMCRED+MTG+CC+CCPURC
+                  +SDB+HMOWN+MOVED+INAREA+BRANCH+RES+ACCTAGE_Bin+DEPAMT_Bin+CHECKS_Bin+NSFAMT_Bin
+                  +PHONE_Bin+TELLER_Bin+SAVBAL_Bin+ATMAMT_Bin+POS_Bin+POSAMT_Bin+CDBAL_Bin+IRABAL_Bin
+                  +DDABAL_Bin+LOCBAL_Bin+INVBAL_Bin+ILSBAL_Bin+MTGBAL_Bin+CCBAL_Bin+INCOME_Bin+LORES_Bin
+                  +HMVAL_Bin+AGE_Bin+CRSCORE_Bin, data=df,
+                  family=binomial(link = "logit"))
+
+# Creates empty model
+empty.model <- glm(INS ~ 1, data=df,
+                   family= binomial(link = "logit"))
+
+# Creates model from backward selection
+back.model <- step(full.model, direction = "backward", k=log(8495))
+
+#----------------------------------------------------------------------
+# End Phase 2
+# ---------------------------------------------------------------------
+
+
+# Concordance for backward selection model
+Concordance(ins_t$INS, ins_t$p_hat)
+
+
+# Discrimination slope (predicted probabilities)
+# Coefficients of discrimination and histogram visuals
+
+ins_t$p_hat <- predict(back.model, type = "response")
+
+p1 <- ins_t$p_hat[ins_t$INS == 1]
+p0 <- ins_t$p_hat[ins_t$INS == 0]
+coef_discrim <- mean(p1) - mean(p0)
+
+ggplot(ins_t, aes(p_hat, fill = factor(INS))) +
+  geom_density(alpha = 0.7) +
+  scale_fill_grey() +
+  labs(x = "Predicted Probability",
+       fill = "Outcome",
+       title = paste("Coefficient of Discrimination = ",
+                     round(coef_discrim, 3), sep = ""))
+
+# creates ROC curve
+# ROC Curve - ROCR Package #
+pred <- prediction(fitted(back.model), factor(ins_t$INS))
+perf <- performance(pred, measure = "tpr", x.measure = "fpr")
+plot(perf, lwd = 3, colorize = TRUE, colorkey = TRUE,
+     colorize.palette = rev(gray.colors(256)))
+abline(a = 0, b = 1, lty = 3)
+
+
+# K-S Statistics #
+ks_plot(ins_t$INS, ins_t$p_hat)
+ks_stat(ins_t$INS, ins_t$p_hat)
+
+perf <- performance(pred, measure = "tpr", x.measure = "fpr")
+KS <- max(perf@y.values[[1]] - perf@x.values[[1]])
+cutoffAtKS <- unlist(perf@alpha.values)[which.max(perf@y.values[[1]] - perf@x.values[[1]])]
+
+# Threshold determination with KS
+print(c(KS, cutoffAtKS))
+
+plot(x = unlist(perf@alpha.values), y = (1-unlist(perf@y.values)),
+     type = "l", main = "K-S Plot (EDF)",
+     xlab = 'Cut-off',
+     ylab = "Proportion",
+     col = "red")
+lines(x = unlist(perf@alpha.values), y = (1-unlist(perf@x.values)), col = "blue")
