@@ -168,7 +168,7 @@ plot(perf, lwd = 3, colorize = TRUE, colorkey = TRUE,
 abline(h = 1, lty = 3)
 
 
-#Classification Metrics on Validation Data (Interaction) ------------------------------------------------------------------
+#Classification Metrics on Validation Data On Interaction Model ------------------------------------------------------------------
 # confusion matrix
 insurance_v$p_hat <- predict(logit.forward.model, newdata = insurance_v, type = "response")
 confusionMatrix(insurance_v$INS, insurance_v$p_hat, threshold = 0.5)
