@@ -32,10 +32,17 @@ insurance_v[, names] <- lapply(insurance_v[,names], factor)
 names <- names(insurance_v2)
 insurance_v2[, names] <- lapply(insurance_v2[,names], factor)
 
+levels(insurance_t$CASHBK) <- list("0" = c("0","2"), "1" = c("1"))
+levels(insurance_t2$CASHBK) <- list("0" = c("0","2"), "1" = c("1"))
+levels(insurance_v$CASHBK) <- list("0" = c("0","2"), "1" = c("1"))
+levels(insurance_v2$CASHBK) <- list("0" = c("0","2"), "1" = c("1"))
+
 insurance_t = insurance_t %>% mutate_if(is.factor, fct_explicit_na, na_level= "M")
 insurance_t2 = insurance_t2 %>% mutate_if(is.factor, fct_explicit_na, na_level= "M")
 insurance_v = insurance_v %>% mutate_if(is.factor, fct_explicit_na, na_level= "M")
 insurance_v2 = insurance_v2 %>% mutate_if(is.factor, fct_explicit_na, na_level= "M")
+
+
 
 
 #Final Model for INS----------------------------------------------------------------------------------------
@@ -91,7 +98,7 @@ ggplot(insurance_t, aes(p_hat, fill = INS)) +
        title = paste("Coefficient of Discrimination = ",
                      round(coef_discrim, 3), sep = ""))
 
-#Classification Metrics on Training Data for Backward Selection--------------------------------------------------------------------
+#Classificatiopn Metrics on Training Data for Backward Selection--------------------------------------------------------------------
 #ROC curve
 plotROC(insurance_t2$INS, insurance_t2$p_hat)
 AUROC(insurance_t2$INS, insurance_t2$p_hat)
@@ -160,7 +167,8 @@ ctable <- data.frame(cutoff, acc)
 
 
 #lift
-pred <- prediction(fitted(logit.model), insurance_v$INS)
+#fitted(logit.model)
+pred <- prediction(insurance_v2$p_hat, insurance_v2$INS)
 perf <- performance(pred, measure = "lift", x.measure = "rpp")
 plot(perf, lwd = 3, colorize = TRUE, colorkey = TRUE,
      colorize.palette = rev(gray.colors(256)),
@@ -188,7 +196,8 @@ ctable <- data.frame(cutoff, acc)
 
 
 #lift
-pred <- prediction(fitted(logit.forward.model), insurance_v$INS)
+#fitted(logit.forward.model)
+pred <- prediction(insurance_v$p_hat, insurance_v$INS)
 perf <- performance(pred, measure = "lift", x.measure = "rpp")
 plot(perf, lwd = 3, colorize = TRUE, colorkey = TRUE,
      colorize.palette = rev(gray.colors(256)),
