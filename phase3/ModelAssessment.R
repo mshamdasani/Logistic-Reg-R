@@ -42,7 +42,8 @@ insurance_t2 = insurance_t2 %>% mutate_if(is.factor, fct_explicit_na, na_level= 
 insurance_v = insurance_v %>% mutate_if(is.factor, fct_explicit_na, na_level= "M")
 insurance_v2 = insurance_v2 %>% mutate_if(is.factor, fct_explicit_na, na_level= "M")
 
-
+levels(insurance_t$CC)
+Freq(insurance_t$CC)
 
 
 #Final Model for INS----------------------------------------------------------------------------------------
@@ -50,13 +51,19 @@ insurance_v2 = insurance_v2 %>% mutate_if(is.factor, fct_explicit_na, na_level= 
 logit.model <-  glm(INS ~NSF + MTG + CC + SAVBAL_Bin + CDBAL_Bin +  MM+ CHECKS_Bin+ TELLER_Bin+ DDABAL_Bin+ ATMAMT_Bin+IRA +INV +ILS + DDA,
                               data=na.omit(insurance_t2),
                               family=binomial(link = "logit"))
+
 full.model <- glm(INS ~DDA+CASHBK+DIRDEP+NSF+SAV+ATM+CD+IRA+LOC+INV+ILS+MM+MMCRED+MTG+CC+CCPURC+SDB+HMOWN+MOVED+INAREA+BRANCH+RES+ACCTAGE_Bin+DEPAMT_Bin+CHECKS_Bin+NSFAMT_Bin+PHONE_Bin+TELLER_Bin+SAVBAL_Bin+ATMAMT_Bin+POS_Bin+POSAMT_Bin+CDBAL_Bin+IRABAL_Bin+DDABAL_Bin+LOCBAL_Bin+INVBAL_Bin+ILSBAL_Bin+MTGBAL_Bin+CCBAL_Bin+INCOME_Bin+LORES_Bin+HMVAL_Bin+AGE_Bin+CRSCORE_Bin,
                   data=insurance_t,
                   family=binomial(link = "logit"))
 
-back.model <- step(full.model, alpha=0.0001, direction = "backward")
-back.model2 <- step(full.model, direction = "backward", k=log(8495))
 
+back.model <- step(full.model, direction = "backward", k=log(8495))
+
+
+logit.model <- glm(formula = INS ~ DDA + NSF + IRA + INV + ILS + MM + MTG + 
+      CC + CHECKS_Bin + TELLER_Bin + SAVBAL_Bin + ATMAMT_Bin + 
+      CDBAL_Bin + DDABAL_Bin, family = binomial(link = "logit"), 
+    data = insurance_t)
 
 #Forward Selection including Interactions
 logit.forward.model <-  glm(INS ~  NSF + MTG + ILS + INV + IRA + DDA + TELLER_Bin + CC + ATMAMT_Bin + 
@@ -65,6 +72,7 @@ logit.forward.model <-  glm(INS ~  NSF + MTG + ILS + INV + IRA + DDA + TELLER_Bi
                               IRA*CDBAL_Bin + ILS*CC + IRA*TELLER_Bin + ATMAMT_Bin*CHECKS_Bin + 
                               MM*DDABAL_Bin + DDA*MM + MM*CDBAL_Bin + MTG*ILS + NSF*ILS + 
                               NSF*MTG + ILS*MM, data=na.omit(insurance_t),family=binomial(link = "logit"))
+
 
 
 #Probability Metrics on Training Data for Backward Selection -----------------------------------------------------------------------
@@ -77,6 +85,19 @@ Concordance(insurance_t2$INS, insurance_t2$p_hat)
 p1 <- insurance_t2$p_hat[insurance_t2$INS == 1]
 p0 <- insurance_t2$p_hat[insurance_t2$INS == 0]
 coef_discrim <- mean(p1) - mean(p0)
+
+ggplot(insurance_t2, aes(p_hat, fill = INS)) +
+  geom_density(alpha = 0.7) +
+  scale_fill_manual(values = c('#FC4E07','#00AFBB'),labels = c('Not Purchased', 'Purchased')) +
+  geom_segment(aes(x = mean(p0),xend = mean(p1), y = 2.5, yend = 2.5))+
+  geom_segment(aes(x = mean(p0),xend = mean(p0), y = 2.3, yend = 2.7))+
+  geom_segment(aes(x = mean(p1),xend = mean(p1), y = 2.3, yend = 2.7))+
+  annotate(geom = 'Text', x = 0.375, y = 2.8, label = 'D = 0.24')+
+  labs(x = "Predicted Probability",
+       y = 'Density',
+       title = 'Predicted Probabilities Distributions for Backward Model',
+       subtitle = 'Levels of INS')+
+  theme(plot.title = element_text(hjust = 0.5, size=16),plot.subtitle = element_text(hjust= 0.5),legend.title=element_blank())
 
 ggplot(insurance_t2, aes(p_hat, fill = INS)) +
   geom_density(alpha = 0.7) +
@@ -96,6 +117,20 @@ Concordance(insurance_t$INS, insurance_t2$p_hat)
 p1 <- insurance_t$p_hat[insurance_t$INS == 1]
 p0 <- insurance_t$p_hat[insurance_t$INS == 0]
 coef_discrim <- mean(p1) - mean(p0)
+
+ggplot(insurance_t, aes(p_hat, fill = INS)) +
+  geom_density(alpha = 0.7) +
+  scale_fill_manual(values = c('#FC4E07','#00AFBB'),labels = c('Not Purchased', 'Purchased')) +
+  geom_segment(aes(x = mean(p0),xend = mean(p1), y = 2.5, yend = 2.5))+
+  geom_segment(aes(x = mean(p0),xend = mean(p0), y = 2.3, yend = 2.7))+
+  geom_segment(aes(x = mean(p1),xend = mean(p1), y = 2.3, yend = 2.7))+
+  annotate(geom = 'Text', x = 0.375, y = 2.8, label = 'D = 0.19')+
+  labs(x = "Predicted Probability",
+       y = 'Density',
+       title = 'Predicted Probabilities Distributions for Forward Model',
+       subtitle = 'Levels of INS')+
+  theme(plot.title = element_text(hjust = 0.5, size=16),plot.subtitle = element_text(hjust= 0.5),legend.title=element_blank())
+
 
 ggplot(insurance_t, aes(p_hat, fill = INS)) +
   geom_density(alpha = 0.7) +
@@ -157,10 +192,10 @@ lines(x = unlist(perf@alpha.values), y = (1-unlist(perf@x.values)), col = "blue"
 #Classification Metrics on Validation Data for Backward Selection ------------------------------------------------------------------
 # confusion matrix
 insurance_v2$p_hat <- predict(logit.model, newdata = insurance_v2, type = "response")
-confusionMatrix(insurance_v2$INS, insurance_v2$p_hat, threshold = 0.5)
+confusionMatrix(insurance_v2$INS, insurance_v2$p_hat, threshold = 0.3125111)
 
 #Confusion Matrix with more Statistics
-caret::confusionMatrix(data = as.factor(as.numeric(insurance_v2$p_hat >  0.3125111)), reference= insurance_v2$INS)
+caret::confusionMatrix(data = as.factor(as.numeric(insurance_v2$p_hat >0.3125111)), reference= insurance_v2$INS)
 
 
 #Accuracy
