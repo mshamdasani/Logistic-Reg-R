@@ -6,7 +6,7 @@ library(ROCR)
 library(InformationValue)
 library(haven)
 library(forcats)
-
+library(tidyverse)
 #Import Training and Validation Set------------------------------------------------------------------------
 insurance_t <-read_sas('/Users/mehak/Desktop/MSA/FALL2020/LogisticRegression/Homework1_LR/Logistic-Reg-R/phase3/insurance_t_bin.sas7bdat')
 insurance_v<- read_sas('/Users/mehak/Desktop/MSA/FALL2020/LogisticRegression/Homework1_LR/Logistic-Reg-R/phase3/insurance_v_bin.sas7bdat')
@@ -50,6 +50,13 @@ insurance_v2 = insurance_v2 %>% mutate_if(is.factor, fct_explicit_na, na_level= 
 logit.model <-  glm(INS ~NSF + MTG + CC + SAVBAL_Bin + CDBAL_Bin +  MM+ CHECKS_Bin+ TELLER_Bin+ DDABAL_Bin+ ATMAMT_Bin+IRA +INV +ILS + DDA,
                               data=na.omit(insurance_t2),
                               family=binomial(link = "logit"))
+full.model <- glm(INS ~DDA+CASHBK+DIRDEP+NSF+SAV+ATM+CD+IRA+LOC+INV+ILS+MM+MMCRED+MTG+CC+CCPURC+SDB+HMOWN+MOVED+INAREA+BRANCH+RES+ACCTAGE_Bin+DEPAMT_Bin+CHECKS_Bin+NSFAMT_Bin+PHONE_Bin+TELLER_Bin+SAVBAL_Bin+ATMAMT_Bin+POS_Bin+POSAMT_Bin+CDBAL_Bin+IRABAL_Bin+DDABAL_Bin+LOCBAL_Bin+INVBAL_Bin+ILSBAL_Bin+MTGBAL_Bin+CCBAL_Bin+INCOME_Bin+LORES_Bin+HMVAL_Bin+AGE_Bin+CRSCORE_Bin,
+                  data=insurance_t,
+                  family=binomial(link = "logit"))
+
+back.model <- step(full.model, alpha=0.0001, direction = "backward")
+back.model2 <- step(full.model, direction = "backward", k=log(8495))
+
 
 #Forward Selection including Interactions
 logit.forward.model <-  glm(INS ~  NSF + MTG + ILS + INV + IRA + DDA + TELLER_Bin + CC + ATMAMT_Bin + 
